@@ -1,0 +1,4 @@
+pyGesture
+=========
+
+Gesture Recognition Framework
