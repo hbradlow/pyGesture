@@ -92,6 +92,7 @@ while True:
         print "[Command] ",
     else: 
         print """Unrecognized command, usage:
+        load        : Load a saved set of trained gestures
         learn       : Learn a new gesture 
         recognize   : Let the program guess what you are trying to input 
         q           : Quit""" 
