@@ -7,6 +7,7 @@ Install
     git clone git://github.com/hbradlow/pyGesture.git
     cd pyGesture
     virtualenv venv
+    source venv/bin/activate
     pip install -r requirements.txt
 
 Try it
