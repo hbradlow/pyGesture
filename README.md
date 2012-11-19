@@ -5,14 +5,17 @@ Try it
 ------
 
 To try it out, run
+
     python collect.py
 
+To train new gestures, run
+
+    [Command] learn
+
 To load pretrained gestures, run
+
     [Command] load
     [Command] recognize
-
-To train new gestures, run
-    [Command] learn
 
 Files
 -----
@@ -24,6 +27,6 @@ Files
 Dependencies
 ------------
 
-* ['scikit-learn'](http://scikit-learn.org/)
-* ['scipy'](http://www.scipy.org/)
-* ['numpy'](http://numpy.scipy.org/)
+* [scikit-learn](http://scikit-learn.org/)
+* [scipy](http://www.scipy.org/)
+* [numpy](http://numpy.scipy.org/)
