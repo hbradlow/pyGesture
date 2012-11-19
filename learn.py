@@ -3,6 +3,10 @@ import features
 import pickle
 import utils
 
+"""
+    List of features to be used by the svm.
+    Each feature is a function that takes a list of frames and returns a scalar or possibly multidimensional list.
+"""
 feature_generators = [
     #finger stuff
     features.average_velocity,
@@ -37,7 +41,7 @@ class GestureLearner:
         for generator in feature_generators:
             vector.append(generator(gesture))
 
-        return [i for i in utils.flatten(vector)]
+        return [i for i in utils.flatten(vector)] #flatten the vector to conform with scikit-learn svm requirements
 
     def register_data(self,gestures,classifications):
         """
@@ -58,11 +62,14 @@ class GestureLearner:
         self.classifications += [self.keys[a] for a in classifications]
 
     def learn(self):
+        """
+            Triger the learner to find a fit for the current data
+        """
         self.classifier.fit(self.feature_vectors,self.classifications)
 
     def predict(self,gesture):
         """
-            Predict a classification for the given feature
+            Predict a classification for the given gesture
         """
         if len(gesture) > self.max_length:
             self.max_length = len(gesture)
@@ -91,11 +98,19 @@ class GestureLearner:
             Load the classifier from a file
         """
         with open(filename,"r") as f:
-            self.feature_vectors,self.classifications,self.keys,self.index = pickle.load(f)
+            (self.feature_vectors,
+            self.classifications,
+            self.keys,
+            self.index) = pickle.load(f)
 
     def save_data(self,filename="data.pickle"):
         """
             Save the classifier to a file
         """
         with open(filename,"w") as f:
-            pickle.dump([self.feature_vectors,self.classifications, self.keys,self.index],f)
+            pickle.dump([
+                            self.feature_vectors,
+                            self.classifications,
+                            self.keys,
+                            self.index
+                        ],f)
