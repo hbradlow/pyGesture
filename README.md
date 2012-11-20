@@ -2,7 +2,7 @@ pyGesture
 =========
 
 Install
-------
+-------
 
     git clone git://github.com/hbradlow/pyGesture.git
     cd pyGesture
