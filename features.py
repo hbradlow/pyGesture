@@ -110,7 +110,7 @@ def length(frames,amount_used=.1):
         for position in positions:
             last.append(position)
 
-    lengths = [utils.norm(utils.subtract(utils.average_position(first),utils.average_position(last))) for first,last in zip(firsts,lasts)]
+    lengths = [numpy.linalg.norm(numpy.subtract(utils.ave_v(first),utils.ave_v(last))) for first,last in zip(firsts,lasts)]
 
     return lengths
 
@@ -123,7 +123,7 @@ def average_position(frames):
         for hand in frame.hands():
             for finger in hand.fingers():
                 values.append(finger.tip().position)
-    average_value = utils.average_position(values)
+    average_value = utils.ave_v(values)
     return [average_value.x,average_value.y,average_value.z]
 
 def average_velocity(frames):
@@ -135,7 +135,7 @@ def average_velocity(frames):
         for hand in frame.hands():
             for finger in hand.fingers():
                 values.append(finger.velocity())
-    average_value = utils.average_position(values)
+    average_value = utils.ave_v(values)
     return [average_value.x,average_value.y,average_value.z]
 
 
@@ -160,10 +160,10 @@ def velocity_histogram(frames,bins = 8,range=(-1.,1.)):
         for hand in frame.hands():
             for finger in hand.fingers():
                 v = finger.velocity()
-                vector = Leap.Vector(v.x,v.y,v.z)
-                x = v.x/utils.norm(vector)
-                y = v.y/utils.norm(vector)
-                z = v.z/utils.norm(vector)
+                vector = numpy.array([v.x,v.y,v.z])
+                x = v.x/numpy.linalg.norm(vector)
+                y = v.y/numpy.linalg.norm(vector)
+                z = v.z/numpy.linalg.norm(vector)
                 l[hround(x)][hround(y)][hround(z)] += 1
     return l
 
@@ -182,9 +182,10 @@ def hand_velocity_histogram(frames,bins = 8,range=(-1.,1.)):
         for hand in frame.hands():
             v = hand.velocity()
             if v:
-                x = v.x/utils.norm(v)
-                y = v.y/utils.norm(v)
-                z = v.z/utils.norm(v)
+                vector = numpy.array([v.x,v.y,v.z])
+                x = v.x/numpy.linalg.norm(vector)
+                y = v.y/numpy.linalg.norm(vector)
+                z = v.z/numpy.linalg.norm(vector)
                 l[hround(x)][hround(y)][hround(z)] += 1
     return l
 
@@ -204,9 +205,10 @@ def palm_normal_histogram(frames,bins = 8,range=(-1.,1.)):
             palm = hand.palm()
             if palm:
                 v = palm.direction
-                x = v.x/utils.norm(v)
-                y = v.y/utils.norm(v)
-                z = v.z/utils.norm(v)
+                vector = numpy.array([v.x,v.y,v.z])
+                x = v.x/numpy.linalg.norm(vector)
+                y = v.y/numpy.linalg.norm(vector)
+                z = v.z/numpy.linalg.norm(vector)
                 l[hround(x)][hround(y)][hround(z)] += 1
     return l
 
@@ -231,9 +233,10 @@ def position_histogram(frames,bins = 8,range=(-1.,1.)):
     for index,position in enumerate(positions):
         positions[index] = utils.subtract(position,average_p)
         v = positions[index]
-        x = v.x/utils.norm(v)
-        y = v.y/utils.norm(v)
-        z = v.z/utils.norm(v)
+        vector = numpy.array([v.x,v.y,v.z])
+        x = v.x/numpy.linalg.norm(vector)
+        y = v.y/numpy.linalg.norm(vector)
+        z = v.z/numpy.linalg.norm(vector)
         l[hround(x)][hround(y)][hround(z)] += 1
     return l
 
@@ -281,3 +284,88 @@ def palm_position_variance(frames):
     ys = [p.y for p in positions]
     zs = [p.z for p in positions]
     return [getVariance(xs),getVariance(ys),getVariance(zs)]
+
+
+
+
+
+
+
+
+
+def velocity_histogram(type,bins=8,range=(-1.,1.)):
+    """
+        Feature based on a 3d histogram of the normalized velocity vectors
+    """
+
+    def feature(frames):
+        length = range[1]-range[0]
+        bin_size = length/bins
+
+        def hround(v):
+            return min(bins-1,int((v-range[0])/bin_size))
+
+        l = list_3d(bins)
+        for frame in frames:
+            for element in frame[type]:
+                v = element.velocity
+                x = v[0]/numpy.linalg.norm(v)
+                y = v[1]/numpy.linalg.norm(v)
+                z = v[2]/numpy.linalg.norm(v)
+                l[hround(x)][hround(y)][hround(z)] += 1
+        return l
+
+    return feature
+
+def direction_histogram(type,bins=8,range=(-1.,1.)):
+    """
+        Feature based on a 3d histogram of the normalized direction vectors
+    """
+
+    def feature(frames):
+        length = range[1]-range[0]
+        bin_size = length/bins
+
+        def hround(v):
+            return min(bins-1,int((v-range[0])/bin_size))
+
+        l = list_3d(bins)
+        for frame in frames:
+            for element in frame[type]:
+                v = element.direction
+                x = v[0]/numpy.linalg.norm(v)
+                y = v[1]/numpy.linalg.norm(v)
+                z = v[2]/numpy.linalg.norm(v)
+                l[hround(x)][hround(y)][hround(z)] += 1
+        return l
+
+    return feature
+
+def position_histogram(type,bins = 8,range=(-1.,1.)):
+    """
+        Feature based on a 3d histogram of the normalized positions
+    """
+    def feature(frames):
+        length = range[1]-range[0]
+        bin_size = length/bins
+
+        def hround(v):
+            return min(bins-1,int((v-range[0])/bin_size))
+
+        l = list_3d(bins)
+        positions = []
+        for frame in frames:
+            for element in frame[type]:
+                p = element.position
+                positions.append(p)
+        average_p = utils.ave_v(positions)
+        for index,position in enumerate(positions):
+            positions[index] = numpy.subtract(position,average_p)
+            v = positions[index]
+            x = v.x/numpy.linalg.norm(v)
+            y = v.y/numpy.linalg.norm(v)
+            z = v.z/numpy.linalg.norm(v)
+            l[hround(x)][hround(y)][hround(z)] += 1
+        return l
+
+    return feature
