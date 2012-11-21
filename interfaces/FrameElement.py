@@ -6,6 +6,6 @@ class FrameElement:
         like acceleration or velocity.
     """
 
-    def __init__(self, x, y, z, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         pass
 
