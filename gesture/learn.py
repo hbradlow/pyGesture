@@ -6,8 +6,8 @@ from gesture import utils
 class GestureLearner:
     def __init__(self):
         self.classifier = svm.LinearSVC()
-        self.feature_vectors = []
         self.classifications = []
+        self.gestures = []
         self.keys = {}
         self.index = 0
         self.max_length = 0
@@ -26,25 +26,24 @@ class GestureLearner:
         """
             Generate a list of feature vectors and train the classifier on them
         """
-        feature_vectors = []
-
-        for gesture in gestures:
-            vector = self.get_feature_vector(gesture)
-            feature_vectors.append(vector)
-
         for key in classifications: 
             if key not in self.keys:
                 self.keys[key] = self.index
                 self.index += 1
                 
-        self.feature_vectors += feature_vectors
+        self.gestures += gestures
         self.classifications += [self.keys[a] for a in classifications]
 
     def learn(self):
         """
             Triger the learner to find a fit for the current data
         """
-        self.classifier.fit(self.feature_vectors,self.classifications)
+        feature_vectors = []
+        for gesture in self.gestures:
+            vector = self.get_feature_vector(gesture)
+            feature_vectors.append(vector)
+
+        self.classifier.fit(feature_vectors,self.classifications)
 
     def predict(self,gesture):
         """
@@ -53,6 +52,7 @@ class GestureLearner:
         if len(gesture) > self.max_length:
             self.max_length = len(gesture)
         vector = self.get_feature_vector(gesture)
+
         num = self.classifier.predict([vector])[0]
         for key,value in self.keys.items():
             if value == num:
@@ -77,10 +77,12 @@ class GestureLearner:
             Load the classifier from a file
         """
         with open(filename,"r") as f:
-            (self.feature_vectors,
-            self.classifications,
-            self.keys,
-            self.index) = pickle.load(f)
+            (
+                self.gestures,
+                self.classifications,
+                self.keys,
+                self.index
+            ) = pickle.load(f)
 
     def save_data(self,filename="data.pickle"):
         """
@@ -88,10 +90,13 @@ class GestureLearner:
         """
         with open(filename,"w") as f:
             pickle.dump([
-                            self.feature_vectors,
+                            self.gestures,
                             self.classifications,
                             self.keys,
                             self.index
                         ],f)
     class Meta:
+        """
+            Override this in subclasses of GestureLearner to specify features
+        """
         feature_generators = []
