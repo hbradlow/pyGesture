@@ -1,28 +1,7 @@
 from sklearn import svm
-import features
+from gesture import features
 import pickle
-import utils
-
-"""
-    List of features to be used by the svm.
-    Each feature is a function that takes a list of frames and returns a scalar or possibly multidimensional list.
-"""
-feature_generators = [
-    #finger stuff
-    features.average_velocity,
-    features.fingerVariance,
-    features.avgFingers,
-
-    #finger histograms
-    features.position_histogram,
-    features.velocity_histogram,
-
-    #hand histograms
-    features.hand_velocity_histogram,
-    features.palm_normal_histogram,
-    features.palm_position_histogram,
-    #features.palm_position_variance,
-]
+from gesture import utils
 
 class GestureLearner:
     def __init__(self):
@@ -38,7 +17,7 @@ class GestureLearner:
             Calculate a vector of features for the given gesture
         """
         vector = []
-        for generator in feature_generators:
+        for generator in self.Meta.feature_generators:
             vector.append(generator(gesture))
 
         return [i for i in utils.flatten(vector)] #flatten the vector to conform with scikit-learn svm requirements
@@ -114,3 +93,5 @@ class GestureLearner:
                             self.keys,
                             self.index
                         ],f)
+    class Meta:
+        feature_generators = []

@@ -1,4 +1,4 @@
-import interfaces.frame
+from gesture import frame
 import numpy
 from lib import Leap
 
@@ -6,7 +6,7 @@ from lib import Leap
 FINGER = "leap_finger"
 HAND = "leap_hand"
 
-class FingerTipElement(interfaces.frame.FrameElement):
+class FingerTipElement(frame.FrameElement):
     def __init__(self,position,direction,velocity,*args,**kwargs):
         super(FingerTipElement,self).__init__(FINGER,*args,**kwargs)
         self.position = position
@@ -20,7 +20,7 @@ class FingerTipElement(interfaces.frame.FrameElement):
         if isinstance(velocity,Leap.Vector):
             self.velocity = numpy.array(velocity.x,velocity.y,velocity.z)
 
-class HandElement(interfaces.frame.FrameElement):
+class HandElement(frame.FrameElement):
     def __init__(self,position,direction,velocity,*args,**kwargs):
         super(HandElement,self).__init__(HAND,*args,**kwargs)
         self.position = position

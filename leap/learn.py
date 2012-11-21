@@ -1,5 +1,5 @@
-from learn import GestureLearner
-import features
+from gesture.learn import GestureLearner
+from gesture import features
 import leap.frame
 
 class LeapLearner(GestureLearner):
@@ -14,4 +14,7 @@ class LeapLearner(GestureLearner):
             #direction
             features.direction_histogram(leap.frame.FINGER),
             features.direction_histogram(leap.frame.HAND),
+            #average number of things
+            features.num_type_histogram(leap.frame.FINGER),
+            features.num_type_histogram(leap.frame.HAND),
         ]

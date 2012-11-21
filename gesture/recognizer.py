@@ -1,7 +1,7 @@
 from lib import Leap
 import sys 
-import learn
-from features import getVariance, fingerVariance
+from gesture import learn
+from gesture.features import getVariance, fingerVariance
 from time import time
 
 class GestureListener(Leap.Listener): 

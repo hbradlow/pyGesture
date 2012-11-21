@@ -1,31 +1,34 @@
 import sys
 from lib import Leap 
-from learn import GestureLearner
 
-class Listener(Leap.Listener): 
+import leap.learn
+import leap.recorder
+import leap.extract
+
+class Listener:
     def __init__(self): 
         self.recording = False
-        super(Listener, self).__init__()
+        self.data = []
 
-    def onInit(self, controller): 
-        self.frames = []
+        #this part is variable
+        self.leap_listener = leap.recorder.LeapListener(self.onFrame)
+        self.controller = Leap.Controller(self.leap_listener)
 
-    def onFrame(self, controller): 
+    def onFrame(self, datum):
         if self.recording: 
-            self.frames.append(controller.frame())
+            self.data.append(data)
 
     def start_recording(self): 
         self.recording = True
 
     def stop_recording(self): 
         self.recording = False 
-        return_list = [frame for frame in self.frames]
-        self.frames = [] 
-        return return_list
+        frames = [leap.extract.extract(datum) for datum in self.data]
+        self.data = [] 
+        return frames
 
 def listen(gesture_list): 
     listener = Listener() 
-    controller = Leap.Controller(listener) 
 
     print "- Press Enter to toggle recording" 
     print "- Press 'q' + Enter to quit"
@@ -47,7 +50,6 @@ def listen(gesture_list):
 def guess(gLearner): 
     gesture_list = []
     listener = Listener() 
-    controller = Leap.Controller(listener)
     while True: 
         letter = sys.stdin.readline()
         if letter[0]  == 'q': 
@@ -68,7 +70,7 @@ print """Usage:
         recognize   : Let the program guess what you are trying to input 
         q           : Quit""" 
 print "[Command] ",
-gLearner = GestureLearner() 
+gLearner = leap.learn.LeapLearner() 
 while True: 
     command = sys.stdin.readline()
     if "learn" in command: 
