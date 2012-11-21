@@ -4,6 +4,7 @@ from gesture import learn
 from time import time
 
 import leap.recorder
+import leap.extract
 
 class GestureListener:
     """
@@ -55,7 +56,7 @@ class GestureListener:
             self.window = []
             return
         self.total_frames += 1
-        self.window.append(frame)
+        self.window.append(leap.extract.extract(frame))
         if len(self.window) > self.max_window_size:
             self.window.pop(0)
         

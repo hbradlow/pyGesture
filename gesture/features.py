@@ -12,17 +12,17 @@ def list_3d(size):
     """
     return [[[0 for i in range(size)] for j in range(size)] for k in range(size)]
 
-def velocity_histogram(type,bins=8,range=(-1.,1.)):
+def velocity_histogram(type,bins=8,limit=(-1.,1.)):
     """
         Feature based on a 3d histogram of the normalized velocity vectors
     """
 
     def feature(frames):
-        length = range[1]-range[0]
+        length = limit[1]-limit[0]
         bin_size = length/bins
 
         def hround(v):
-            return min(bins-1,int((v-range[0])/bin_size))
+            return min(bins-1,int((v-limit[0])/bin_size))
 
         l = list_3d(bins)
         for frame in frames:
@@ -36,17 +36,17 @@ def velocity_histogram(type,bins=8,range=(-1.,1.)):
 
     return feature
 
-def direction_histogram(type,bins=8,range=(-1.,1.)):
+def direction_histogram(type,bins=8,limit=(-1.,1.)):
     """
         Feature based on a 3d histogram of the normalized direction vectors
     """
 
     def feature(frames):
-        length = range[1]-range[0]
+        length = limit[1]-limit[0]
         bin_size = length/bins
 
         def hround(v):
-            return min(bins-1,int((v-range[0])/bin_size))
+            return min(bins-1,int((v-limit[0])/bin_size))
 
         l = list_3d(bins)
         for frame in frames:
@@ -60,16 +60,16 @@ def direction_histogram(type,bins=8,range=(-1.,1.)):
 
     return feature
 
-def position_histogram(type,bins = 8,range=(-1.,1.)):
+def position_histogram(type,bins = 8,limit=(-1.,1.)):
     """
         Feature based on a 3d histogram of the normalized positions
     """
     def feature(frames):
-        length = range[1]-range[0]
+        length = limit[1]-limit[0]
         bin_size = length/bins
 
         def hround(v):
-            return min(bins-1,int((v-range[0])/bin_size))
+            return min(bins-1,int((v-limit[0])/bin_size))
 
         l = list_3d(bins)
         positions = []
@@ -77,28 +77,29 @@ def position_histogram(type,bins = 8,range=(-1.,1.)):
             for element in frame[type]:
                 p = element.position
                 positions.append(p)
-        average_p = utils.ave_v(positions)
-        for index,position in enumerate(positions):
-            positions[index] = numpy.subtract(position,average_p)
-            v = positions[index]
-            x = v.x/numpy.linalg.norm(v)
-            y = v.y/numpy.linalg.norm(v)
-            z = v.z/numpy.linalg.norm(v)
-            l[hround(x)][hround(y)][hround(z)] += 1
+        if len(positions)>0:
+            average_p = utils.ave_v(positions)
+            for index,position in enumerate(positions):
+                positions[index] = numpy.subtract(position,average_p)
+                v = positions[index]
+                x = v.x/numpy.linalg.norm(v)
+                y = v.y/numpy.linalg.norm(v)
+                z = v.z/numpy.linalg.norm(v)
+                l[hround(x)][hround(y)][hround(z)] += 1
         return l
 
     return feature
 
-def num_type_histogram(type,bins=10,range=(0,10)):
+def num_type_histogram(type,bins=10,limit=(0,10)):
     """
         Feature based on the histogram of the number of a certain type of element
     """
     def feature(frames):
-        length = range[1]-range[0]
+        length = limit[1]-limit[0]
         bin_size = length/bins
 
         def hround(v):
-            return min(bins-1,int((v-range[0])/bin_size))
+            return min(bins-1,int((v-limit[0])/bin_size))
 
         l = [0 for i in range(bins)]
         for frame in frames:
