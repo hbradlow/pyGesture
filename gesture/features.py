@@ -80,8 +80,7 @@ def position_histogram(type,bins = 8,limit=(-1.,1.)):
         if len(positions)>0:
             average_p = utils.ave_v(positions)
             for index,position in enumerate(positions):
-                positions[index] = numpy.subtract(position,average_p)
-                v = positions[index]
+                v = numpy.subtract(position,average_p)
                 x = v.x/numpy.linalg.norm(v)
                 y = v.y/numpy.linalg.norm(v)
                 z = v.z/numpy.linalg.norm(v)
