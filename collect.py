@@ -61,13 +61,13 @@ def guess(gLearner):
             print "[Stop] ",
             listener.start_recording()
 
+
 print """Usage:
         load        : Load a saved set of trained gestures
         learn       : Learn a new gesture 
         recognize   : Let the program guess what you are trying to input 
         q           : Quit""" 
 print "[Command] ",
-
 gLearner = GestureLearner() 
 while True: 
     command = sys.stdin.readline()
