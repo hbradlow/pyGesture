@@ -1,24 +1,23 @@
 from lib import Leap
 import sys 
 from gesture import learn
-from gesture.features import getVariance, fingerVariance
 from time import time
 
-class GestureListener(Leap.Listener): 
+import leap.recorder
+
+class GestureListener:
     """
         Selectively analyzes the frame stream to detect gestures that have
         been taught to a learn.GestureLearner (or other) classifier.
     """
 
-    def __init__(self, callback, controller): 
+    def __init__(self, callback):
         super(GestureListener, self).__init__()
         self.callback = callback 
-        self.controller = controller
+
+        self.leap_listener = leap.recorder.LeapListener(self.onFrame)
+        self.controller = Leap.Controller(self.leap_listener)
         
-    def onInit(self, controller): 
-        """
-            Initialize the instance variables.
-        """
         # Set up the classifier and populate it with
         # learned gestures.
         self.learner = learn.GestureLearner()
@@ -46,7 +45,7 @@ class GestureListener(Leap.Listener):
         self.last_update = time()
 
 
-    def onFrame(self, controller):
+    def onFrame(self, frame);
         """
             Update self.window to reflect the new frame, then 
             either check for a gesture or do nothing. If a gesture is found,
@@ -56,24 +55,27 @@ class GestureListener(Leap.Listener):
             self.window = []
             return
         self.total_frames += 1
-        self.window.append(controller.frame())
+        self.window.append(frame)
         if len(self.window) > self.max_window_size:
             self.window.pop(0)
         
         if self.total_frames % self.freq == 0 and not self.emptyFrames(self.window):
             prediction = self.learner.predict(self.window)
-            self.callback(self.controller, prediction)
+            self.callback(prediction)
             self.window = []
 
-    # 
     def emptyFrames(self, frames):
         """
             A hack to stop the classifier from running on a window
             full of random noise.
         """
+        #TODO: rewrite this function to be abstracted away from Leap
+        """
         variance = fingerVariance(frames)
         maxvar = max(variance)
         return maxvar < self.empty_threshold
+        """
+        return False
 
     def locked(self):
         """
@@ -89,4 +91,3 @@ class GestureListener(Leap.Listener):
         """
         self.last_update = time()
         self.delay = delay
-
