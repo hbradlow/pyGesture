@@ -40,28 +40,3 @@ class FrameElement:
     """
     def __init__(self, type, *args, **kwargs):
         self.type = type
-
-class FrameIterator(collections.Iterator):
-    """
-        Abstract class intended to be subclassed for each
-        type of 3D input hardware. The FrameIterator is used 
-        by a Recognizer to look at Frames in order.
-    """
-
-    def __init__(self):
-        self.frames = []
-
-    def __getitem__(self,index):
-        return self.frames[index]
-
-    def __add__(self,frame):
-        self.addFrame(frame)
-    def addFrame(self, frame):
-        self.frames.append(frame)
-
-    def next(self):
-        """
-            Returns the chronologically next Frame.
-        """
-        for f in self.frames:
-            yield f
