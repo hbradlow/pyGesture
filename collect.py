@@ -16,7 +16,7 @@ class Listener:
 
     def onFrame(self, datum):
         if self.recording: 
-            self.data.append(data)
+            self.data.append(datum)
 
     def start_recording(self): 
         self.recording = True
@@ -84,6 +84,7 @@ while True:
         gLearner.save_data()
     elif "recognize" in command: 
         gLearner.learn()
+        print "Done learning"
         guess(gLearner)     
         print "[Command] ", 
     elif command[0] == "q": 

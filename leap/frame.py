@@ -8,28 +8,30 @@ HAND = "leap_hand"
 
 class FingerTipElement(frame.FrameElement):
     def __init__(self,position,direction,velocity,*args,**kwargs):
-        super(FingerTipElement,self).__init__(FINGER,*args,**kwargs)
+        #super(FingerTipElement,self).__init__(FINGER,*args,**kwargs)
+        self.type = FINGER
         self.position = position
         self.direction = direction
         self.velocity = velocity
 
         if isinstance(position,Leap.Vector):
-            self.position = numpy.array(position.x,position.y,position.z)
+            self.position = numpy.array([position.x,position.y,position.z])
         if isinstance(direction,Leap.Vector):
-            self.direction = numpy.array(direction.x,direction.x,direction.x)
+            self.direction = numpy.array([direction.x,direction.x,direction.x])
         if isinstance(velocity,Leap.Vector):
-            self.velocity = numpy.array(velocity.x,velocity.y,velocity.z)
+            self.velocity = numpy.array([velocity.x,velocity.y,velocity.z])
 
 class HandElement(frame.FrameElement):
-    def __init__(self,position,direction,velocity,*args,**kwargs):
-        super(HandElement,self).__init__(HAND,*args,**kwargs)
+    def __init__(self,position=None,direction=None,velocity=None,*args,**kwargs):
+        #super(HandElement,self).__init__(HAND,*args,**kwargs)
+        self.type = HAND
         self.position = position
         self.direction = direction
         self.velocity = velocity
 
         if isinstance(position,Leap.Vector):
-            self.position = numpy.array(position.x,position.y,position.z)
+            self.position = numpy.array([position.x,position.y,position.z])
         if isinstance(direction,Leap.Vector):
-            self.direction = numpy.array(direction.x,direction.x,direction.x)
+            self.direction = numpy.array([direction.x,direction.x,direction.x])
         if isinstance(velocity,Leap.Vector):
-            self.velocity = numpy.array(velocity.x,velocity.y,velocity.z)
+            self.velocity = numpy.array([velocity.x,velocity.y,velocity.z])

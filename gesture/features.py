@@ -5,6 +5,7 @@
 """
 from lib import Leap
 from gesture import utils
+import numpy
 
 def list_3d(size):
     """
@@ -81,9 +82,9 @@ def position_histogram(type,bins = 8,limit=(-1.,1.)):
             average_p = utils.ave_v(positions)
             for index,position in enumerate(positions):
                 v = numpy.subtract(position,average_p)
-                x = v.x/numpy.linalg.norm(v)
-                y = v.y/numpy.linalg.norm(v)
-                z = v.z/numpy.linalg.norm(v)
+                x = v[0]/numpy.linalg.norm(v)
+                y = v[1]/numpy.linalg.norm(v)
+                z = v[2]/numpy.linalg.norm(v)
                 l[hround(x)][hround(y)][hround(z)] += 1
         return l
 

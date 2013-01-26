@@ -21,6 +21,7 @@ class Frame(collections.Iterator):
 
     def __add__(self,element):
         self.addElement(element)
+        return self
     def addElement(self, element):
         self.elements.append(element)
 
@@ -38,5 +39,5 @@ class FrameElement:
         x, y, and z. It may also have other properties,
         like acceleration or velocity.
     """
-    def __init__(self, type, *args, **kwargs):
-        self.type = type
+    def __init__(self, t, *args, **kwargs):
+        self.type = t

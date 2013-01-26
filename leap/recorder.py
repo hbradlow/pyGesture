@@ -5,5 +5,5 @@ class LeapListener(Leap.Listener):
         self.callback = callback
         super(LeapListener, self).__init__()
 
-    def onFrame(self, controller): 
-        callback(controller.frame())
+    def on_frame(self, controller): 
+        self.callback(controller.frame())
